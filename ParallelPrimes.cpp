@@ -78,10 +78,9 @@ void primeNumberFinder(lockableCounter *c, sharedList *list){
 }
 
 int main(int argc, char**argv){
-    int size = atoi(argv[1]);
 
     lockableCounter *counter = new lockableCounter();
-    sharedList *list = new sharedList(size);
+    sharedList *list = new sharedList(100000000);
 
     std::vector<std::thread> threads;
     auto start = std::chrono::high_resolution_clock::now();
@@ -95,11 +94,33 @@ int main(int argc, char**argv){
     }
     auto end = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double> duration = end - start;
-    std::cout << "Execution time: " << duration.count() << " seconds." << std::endl;
+    
+    int count = 0;
+    long long int sum = 0;
+    std::vector<long long int> topTenPrimes;
 
-    // for(int i = 2; i < list->getSize(); i++)
-    //     if(list->getVal(i))
-    //         std::cout << i << " ";
-    std::cout<< std::endl << list->getNumPrimes() << std::endl;
+    for (int i = 2; i < list->getSize(); i++)
+    {
+        if(list->getVal(i))
+        {
+            sum+=i;
+        }
+    } 
+    std::cout << duration.count() << " " << list->getNumPrimes() << " " << sum << std::endl;
+    for(int i = list->getSize(); i > 2; i--)
+    {
+        if(count == 10)
+            break;
+        if(list->getVal(i))
+        {
+            topTenPrimes.insert(topTenPrimes.begin(), i);
+            count++;
+        }      
+    }   
+
+    for(int i = 0; i < 10; i++)
+        std::cout << topTenPrimes[i] << " ";
+    
+    std::cout << std::endl;
     return 0;
 }
